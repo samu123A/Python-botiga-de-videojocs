@@ -26,3 +26,33 @@ def mostrar_menu():
             break
         else:
             print("Opció no vàlida. Si us plau, selecciona una opció del 1 al 4.")
+def calcular_facturacio():
+    with open('datos.csv', mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        
+        facturacio_sense_iva = 0.0
+        facturacio_amb_iva = 0.0
+        total_productes_venduts = 0
+        productes_diferents = set()
+        
+        for row in reader:
+            quantitat = int(row['Quantitat_Venuda'])
+            preu = float(row['Preu_Unitari'])
+            iva = float(row['IVA'])
+            
+            preu_sense_iva = quantitat * preu
+            preu_amb_iva = preu_sense_iva * (1 + iva/100)
+            
+            facturacio_sense_iva += preu_sense_iva
+            facturacio_amb_iva += preu_amb_iva
+            total_productes_venduts += quantitat
+            productes_diferents.add(row['Producte'])
+        
+        print("\n" + "="*50)
+        print("INFORME DE FACTURACIÓ")
+        print("="*50)
+        print(f"Productes diferents venuts: {len(productes_diferents)}")
+        print(f"Unitats totals venudes: {total_productes_venduts}")
+        print(f"Facturació total sense IVA: {facturacio_sense_iva:.2f}€")
+        print(f"Facturació total amb IVA: {facturacio_amb_iva:.2f}€")
+        print("="*50)

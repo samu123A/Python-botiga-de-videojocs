@@ -56,3 +56,36 @@ def calcular_facturacio():
         print(f"Facturació total sense IVA: {facturacio_sense_iva:.2f}€")
         print(f"Facturació total amb IVA: {facturacio_amb_iva:.2f}€")
         print("="*50)
+def mostrar_estoc():
+    with open('datos.csv', mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        
+        estoc = {}
+        
+        for row in reader:
+            producte = row['Producte']
+            categoria = row['Categoria']
+            quantitat = int(row['Estoc_Disponible'])
+            
+            if producte in estoc:
+                estoc[producte]['quantitat'] += quantitat
+            else:
+                estoc[producte] = {
+                    'categoria': categoria,
+                    'quantitat': quantitat
+                }
+        
+        print("\n" + "="*50)
+        print("ESTOC DISPONIBLE")
+        print("="*50)
+        print("{:<40} {:<20} {:<10}".format("Producte", "Categoria", "Quantitat"))
+        print("-"*70)
+        
+        for producte, info in sorted(estoc.items()):
+            print("{:<40} {:<20} {:<10}".format(
+                producte, 
+                info['categoria'], 
+                info['quantitat']
+            ))
+        
+        print("="*70)

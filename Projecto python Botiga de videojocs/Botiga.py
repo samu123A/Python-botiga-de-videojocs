@@ -27,7 +27,7 @@ def mostrar_menu():
         else:
             print("Opció no vàlida. Si us plau, selecciona una opció del 1 al 4.")
 def calcular_facturacio():
-    with open('datos.csv', mode='r', encoding='utf-8') as file:
+    with open('dades_botiga.csv', mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         
         facturacio_sense_iva = 0.0
@@ -57,7 +57,7 @@ def calcular_facturacio():
         print(f"Facturació total amb IVA: {facturacio_amb_iva:.2f}€")
         print("="*50)
 def mostrar_estoc():
-    with open('datos.csv', mode='r', encoding='utf-8') as file:
+    with open('dades_botiga.csv', mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         
         estoc = {}

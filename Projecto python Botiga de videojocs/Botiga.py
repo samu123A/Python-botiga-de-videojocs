@@ -89,3 +89,56 @@ def mostrar_estoc():
             ))
         
         print("="*70)
+def top_productes():
+    with open('dades_botiga.csv', mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        
+        productes = {}
+        
+        for row in reader:
+            nom_producte = row['Producte']
+            quantitat = int(row['Quantitat_Venuda'])
+            preu = float(row['Preu_Unitari'])
+            iva = float(row['IVA'])
+            
+            if nom_producte in productes:
+                productes[nom_producte]['quantitat'] += quantitat
+                productes[nom_producte]['facturacio_sense_iva'] += quantitat * preu
+                productes[nom_producte]['facturacio_amb_iva'] += quantitat * preu * (1 + iva/100)
+            else:
+                productes[nom_producte] = {
+                    'categoria': row['Categoria'],
+                    'quantitat': quantitat,
+                    'facturacio_sense_iva': quantitat * preu,
+                    'facturacio_amb_iva': quantitat * preu * (1 + iva/100)
+                }
+        
+        top3 = sorted(
+            productes.items(), 
+            key=lambda x: x[1]['quantitat'], 
+            reverse=True
+        )[:3]
+        
+        print("\n" + "="*50)
+        print("TOP 3 PRODUCTES MÉS VENUTS")
+        print("="*50)
+        print("{:<5} {:<40} {:<20} {:<15} {:<20} {:<20}".format(
+            "Pos.", "Producte", "Categoria", "Unitats venudes", "Facturació (s/IVA)", "Facturació (c/IVA)"))
+        print("-"*120)
+        
+        for i, (producte, info) in enumerate(top3, 1):
+            print("{:<5} {:<40} {:<20} {:<15} {:<20.2f}€ {:<20.2f}€".format(
+                i,
+                producte,
+                info['categoria'],
+                info['quantitat'],
+                info['facturacio_sense_iva'],
+                info['facturacio_amb_iva']
+            ))
+        
+        print("="*120)
+
+if __name__ == "__main__":
+    with open('dades_botiga.csv', mode='r', encoding='utf-8'):
+        pass
+    mostrar_menu()

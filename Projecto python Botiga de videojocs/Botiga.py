@@ -1,4 +1,3 @@
-    
 import csv
 from datetime import datetime
 
@@ -26,14 +25,14 @@ def mostrar_menu():
             break
         else:
             print("Opció no vàlida. Si us plau, selecciona una opció del 1 al 4.")
+
 def calcular_facturacio():
     with open('dades_botiga.csv', mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         
         facturacio_sense_iva = 0.0
-        facturacio_amb_iva = 0.0
+        amb_iva = 0.0
         total_productes_venduts = 0
-        productes_diferents = set()
         
         for row in reader:
             quantitat = int(row['Quantitat_Venuda'])
@@ -44,18 +43,18 @@ def calcular_facturacio():
             preu_amb_iva = preu_sense_iva * (1 + iva/100)
             
             facturacio_sense_iva += preu_sense_iva
-            facturacio_amb_iva += preu_amb_iva
+            amb_iva += preu_amb_iva
             total_productes_venduts += quantitat
-            productes_diferents.add(row['Producte'])
+
         
         print("\n" + "="*50)
         print("INFORME DE FACTURACIÓ")
         print("="*50)
-        print(f"Productes diferents venuts: {len(productes_diferents)}")
         print(f"Unitats totals venudes: {total_productes_venduts}")
         print(f"Facturació total sense IVA: {facturacio_sense_iva:.2f}€")
-        print(f"Facturació total amb IVA: {facturacio_amb_iva:.2f}€")
+        print(f"Facturació total amb IVA: {amb_iva:.2f}€")
         print("="*50)
+
 def mostrar_estoc():
     with open('dades_botiga.csv', mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
@@ -89,6 +88,7 @@ def mostrar_estoc():
             ))
         
         print("="*70)
+
 def top_productes():
     with open('dades_botiga.csv', mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
@@ -113,12 +113,17 @@ def top_productes():
                     'facturacio_amb_iva': quantitat * preu * (1 + iva/100)
                 }
         
-        top3 = sorted(
-            productes.items(), 
-            key=lambda x: x[1]['quantitat'], 
-            reverse=True
-        )[:3]
+        # Ordenar productos por cantidad sin usar lambda
+        top3 = []
+        for producte, info in productes.items():
+            top3.append((producte, info))
+
+        # Ordenamos top3 por cantidad de forma descendente
+        top3.sort(key=ordenar_por_quantitat_descendente)
         
+        # Tomamos los 3 primeros
+        top3 = top3[:3]
+
         print("\n" + "="*50)
         print("TOP 3 PRODUCTES MÉS VENUTS")
         print("="*50)
@@ -138,7 +143,7 @@ def top_productes():
         
         print("="*120)
 
-if __name__ == "__main__":
-    with open('dades_botiga.csv', mode='r', encoding='utf-8'):
-        pass
-    mostrar_menu()
+def ordenar_por_quantitat_descendente(elemento):
+    return elemento[1]['quantitat']
+
+mostrar_menu()
